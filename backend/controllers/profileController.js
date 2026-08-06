@@ -11,11 +11,21 @@ export const getUserProfile = async (req, res) => {
         const profileRef = db.collection('profiles');
         const querySnapshot = await profileRef.where('username', '==', username).get();
 
+        let emailFallback = '';
+        const usersRef = db.collection('users');
+        const userQuery = await usersRef.where('username', '==', username).get();
+        if (!userQuery.empty) {
+            userQuery.forEach(doc => {
+                emailFallback = doc.data().email || '';
+            });
+        }
+
         if (querySnapshot.empty) {
             // Fallback empty profile representation
             return res.json({
                 username,
                 age: '',
+                email: emailFallback,
                 gender: '',
                 bio: '',
                 budget: 'moderate',
@@ -31,6 +41,10 @@ export const getUserProfile = async (req, res) => {
             profileData = doc.data();
         });
 
+        if (!profileData.email) {
+            profileData.email = emailFallback;
+        }
+
         res.json(profileData);
     } catch (error) {
         console.error('Error fetching profile:', error);
@@ -43,7 +57,7 @@ export const getUserProfile = async (req, res) => {
  * POST /api/users/profile
  */
 export const updateUserProfile = async (req, res) => {
-    const { age, gender, bio, budget, pace, style, interests, avatar } = req.body;
+    const { age, email, gender, bio, budget, pace, style, interests, avatar } = req.body;
     // req.user is hydrated by the JWT auth middleware
     const username = req.user.username; 
 
@@ -54,6 +68,7 @@ export const updateUserProfile = async (req, res) => {
         const profileData = {
             username,
             age: age || '',
+            email: email || '',
             gender: gender || '',
             bio: bio || '',
             budget: budget || 'moderate',

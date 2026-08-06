@@ -104,3 +104,42 @@ export const sendMessage = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+/**
+ * Remove a participant from a chat room (Host can kick, member can leave)
+ * POST /api/chats/:chatRoomId/participants
+ */
+export const removeParticipant = async (req, res) => {
+    const { chatRoomId } = req.params;
+    const { participant } = req.body;
+    const username = req.user.username;
+
+    try {
+        const chatRef = db.collection('chats').doc(chatRoomId);
+        const chatDoc = await chatRef.get();
+
+        if (!chatDoc.exists) {
+            return res.status(404).json({ message: 'Chat room not found' });
+        }
+
+        const chatData = chatDoc.data();
+
+        if (username !== chatData.host && username !== participant) {
+            return res.status(403).json({ message: 'Not authorized to remove this participant' });
+        }
+
+        if (chatData.host === participant) {
+            return res.status(400).json({ message: 'Host cannot be removed or leave the chat directly' });
+        }
+
+        await chatRef.update({
+            participants: admin.firestore.FieldValue.arrayRemove(participant)
+        });
+
+        res.json({ status: 'removed' });
+    } catch (error) {
+        console.error('Error removing participant:', error);
+        res.status(500).json({ message: error.message });
+    }
+};
+

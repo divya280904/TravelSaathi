@@ -58,10 +58,9 @@ const ForgotPassword = () => {
             const res = await api.post('/api/users/forgot-password', {
                 email,
                 otp,
-                newPassword,
-                captchaQuestion: captcha.question,
-                captchaAnswer: Number(captchaAnswer)
+                newPassword
             });
+
 
             if (res.data.status === 'passwordupdated') {
                 showToast('Password reset successfully. Please sign in.', 'success');

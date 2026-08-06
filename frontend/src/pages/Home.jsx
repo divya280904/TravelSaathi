@@ -5,6 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import '../App.css';
+import bannerImg from '../assets/banner.png';
 
 // Fix for default leaflet marker icon issue in react
 import L from 'leaflet';
@@ -192,7 +193,15 @@ const Home = () => {
 
     return (
         <div className="content">
-            <header className="welcome-header">
+            <div className="neo-raised" style={{ marginBottom: '30px', borderRadius: '20px', overflow: 'hidden', height: '250px', position: 'relative' }}>
+                <img src={bannerImg} alt="Explore the World" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, background: 'linear-gradient(to top, rgba(0,0,0,0.8), transparent)', padding: '40px 20px 20px', color: 'white' }}>
+                    <h2 style={{ margin: 0, fontSize: '28px', textShadow: '0 2px 4px rgba(0,0,0,0.5)' }}>Explore Buddy Trips</h2>
+                    <span style={{ fontSize: '16px', opacity: 0.9, textShadow: '0 1px 2px rgba(0,0,0,0.5)' }}>Find travel partners matching your style</span>
+                </div>
+            </div>
+
+            <header className="welcome-header" style={{ display: 'none' }}>
                 <div>
                     <h2 className="welcome-title" style={{ textAlign: 'left', margin: 0 }}>Explore Buddy Trips</h2>
                     <span className="welcome-subtitle">Find travel partners matching your style</span>

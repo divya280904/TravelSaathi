@@ -1,6 +1,7 @@
 import { db } from '../config/firebase.js';
 import { generateRandomID } from '../utils/helpers.js';
 import bcrypt from 'bcryptjs';
+import axios from "axios";
 import jwt from 'jsonwebtoken';
 import { createNotification } from './notificationController.js';
 import { generateOtpCode, validateCaptcha } from '../utils/authHelpers.js';
@@ -49,14 +50,68 @@ const generateToken = (userID, username) => {
     );
 };
 
+const verifyTurnstile = async (token) => {
+    try {
+        const response = await axios.post(
+            "https://challenges.cloudflare.com/turnstile/v0/siteverify",
+            new URLSearchParams({
+                secret: process.env.TURNSTILE_SECRET_KEY,
+                response: token,
+            }),
+            {
+                headers: {
+                    "Content-Type":
+                        "application/x-www-form-urlencoded",
+                },
+            }
+        );
+
+        return response.data.success;
+    } catch (err) {
+        console.error("Turnstile Error:", err.message);
+        return false;
+    }
+};
+
 /**
  * Register a new user with password hashing and JWT issuance
  * POST /api/users/register
  */
 export const registerUser = async (req, res) => {
-    const { username, password, email } = req.body;
+    const { username, password, email, confirmPassword, captchaToken } = req.body;
 
     try {
+        if (
+            !username ||
+            !email ||
+            !password ||
+            !confirmPassword
+        ) {
+            return res.status(400).json({
+                message: "All fields are required",
+            });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({
+                status: "passwordMismatch",
+            });
+        }
+
+        if (password.length < 8) {
+            return res.status(400).json({
+                status: "weakPassword",
+            });
+        }
+
+        const captchaVerified =
+            await verifyTurnstile(captchaToken);
+
+        if (!captchaVerified) {
+            return res.status(400).json({
+                status: "captchaFailed",
+            });
+        }
         const usersRef = db.collection('users');
         const existingByUsername = await usersRef.where('username', '==', username).get();
         const existingByEmail = email ? await usersRef.where('email', '==', email).get() : { empty: true };
@@ -77,11 +132,19 @@ export const registerUser = async (req, res) => {
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
+        const otp = generateOtpCode();
+
+        const expiry =
+            Date.now() + 10 * 60 * 1000;
+
         const newUser = {
             username,
             email: email || '',
             password: hashedPassword,
             userID: randomID,
+            emailOtp: otp,
+            emailOtpExpiry: expiry,
+            isVerified: false,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString()
         };
@@ -193,15 +256,12 @@ export const socialLogin = async (req, res) => {
 };
 
 export const forgotPassword = async (req, res) => {
-    const { email, otp, newPassword, captchaAnswer, captchaQuestion } = req.body;
+    const { email, otp, newPassword } = req.body;
 
-    if (!email || !otp || !newPassword || !captchaQuestion || typeof captchaAnswer !== 'number') {
-        return res.status(400).json({ message: 'Email, OTP, new password, and captcha answer are required' });
+    if (!email || !otp || !newPassword) {
+        return res.status(400).json({ message: 'OTP, and new password are required' });
     }
 
-    if (!validateCaptcha(captchaQuestion, captchaAnswer)) {
-        return res.status(400).json({ message: 'Captcha verification failed' });
-    }
 
     try {
         const userDoc = await getUserDocByEmail(email);

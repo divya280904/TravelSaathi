@@ -12,6 +12,7 @@ const Profile = () => {
     const isOwnProfile = username === currentUsername;
     
     const [age, setAge] = useState('');
+    const [email, setEmail] = useState('');
     const [gender, setGender] = useState('');
     const [bio, setBio] = useState('');
     const [budget, setBudget] = useState('moderate');
@@ -36,6 +37,7 @@ const Profile = () => {
                 const data = res.data;
                 if (data) {
                     setAge(data.age || '');
+                    setEmail(data.email || '');
                     setGender(data.gender || '');
                     setBio(data.bio || '');
                     setBudget(data.budget || 'moderate');
@@ -100,6 +102,7 @@ const Profile = () => {
         try {
             const res = await api.post('/api/users/profile', {
                 age: Number(age) || '',
+                email,
                 gender,
                 bio,
                 budget,
@@ -258,6 +261,17 @@ const Profile = () => {
                             placeholder="Enter age"
                             value={age}
                             onChange={(e) => setAge(e.target.value)}
+                            disabled={!isOwnProfile}
+                        />
+                    </div>
+                    <div className="form-group">
+                        <label>Contact Email</label>
+                        <input
+                            type="email"
+                            className="neo-input"
+                            placeholder="Enter contact email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
                             disabled={!isOwnProfile}
                         />
                     </div>

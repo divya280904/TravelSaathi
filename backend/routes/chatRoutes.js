@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUserChats, getChatMessages, sendMessage } from '../controllers/chatController.js';
+import { getUserChats, getChatMessages, sendMessage, removeParticipant } from '../controllers/chatController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -12,5 +12,8 @@ router.route('/:chatRoomId')
 
 router.route('/:chatRoomId/message')
     .post(protect, sendMessage);
+
+router.route('/:chatRoomId/participants')
+    .post(protect, removeParticipant);
 
 export default router;
