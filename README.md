@@ -1,108 +1,229 @@
-# TravelSaathi - Firebase Setup and Configuration Guide
+# 🌍 TravelSaathi
 
-This project has been migrated from MongoDB to **Google Firebase Cloud Firestore**. This document details the step-by-step instructions to configure your Firebase project and hook it up to the application.
-
----
-
-## Step 1: Create a Firebase Project
-
-1. Go to the [Firebase Console](https://console.firebase.google.com/).
-2. Click **Add project** (or select an existing project).
-3. Enter a project name (e.g., `travelsaathi-app`).
-4. (Optional) Choose whether to enable Google Analytics, then click **Create project** and wait for it to complete.
+TravelSaathi is a **solo travel companion finder** that helps travelers connect with like-minded people planning similar trips. Users can create travel plans, discover compatible travel buddies based on destination and travel dates, and communicate securely through the platform. The application aims to make solo travel safer, more social, and more enjoyable.
 
 ---
 
-## Step 2: Set up Cloud Firestore Database
+## ✨ Features
 
-1. In the Firebase console left-hand sidebar, navigate to **Build** > **Firestore Database**.
-2. Click **Create database**.
-3. Choose your database location (select a location closest to your users) and click **Next**.
-4. Start in **Test mode** (for quick local development testing) or **Production mode**:
-   * **Test mode**: Allows anyone with the database reference to read/write to the database for 30 days.
-   * **Production mode**: Blocks all reads/writes by default. If using Production mode, configure the security rules as shown below.
-5. Click **Create** and wait for the database to provision.
+### 🔐 Authentication
 
-### Firestore Security Rules (Recommended)
+* Email & Password Registration/Login
+* Google OAuth Login
+* JWT-based Authentication
+* Protected Routes
+* Forgot Password with OTP Verification
+* Secure Password Hashing
 
-In the **Rules** tab of your Firestore Database in the console, publish the following rules to allow authenticated/basic interactions while keeping structure:
+### 👤 User Profile
+
+* Create and update profile
+* Upload profile picture
+* Manage personal details
+* View travel history
+
+### ✈️ Trip Management
+
+* Create new trips
+* Delete trips
+* View upcoming trips
+* Search trips by destination
+* View trip details
+
+### 🤝 Travel Buddy Matching
+
+* Find travelers with similar destinations
+* Match users based on travel dates
+* Browse compatible travel companions
+* View traveler profiles before connecting
+
+### 💬 Communication
+
+* Send travel requests
+* Accept or reject requests
+* In-app messaging between matched travelers
+
+### 🌦️ Weather Information
+
+* View weather forecasts for destinations
+* Weather data integrated using external Weather API
+
+### 🔒 Security
+
+* JWT Authentication
+* Password hashing with bcrypt
+* Protected backend APIs
+
+### 📱 Responsive Design
+
+* Mobile-friendly interface
+* Responsive layouts using React
+* Modern and intuitive UI
+
+---
+
+# 🛠 Tech Stack
+
+## Frontend
+
+* React.js
+* Vite
+* React Router
+* Axios
+* CSS
+
+## Backend
+
+* Node.js
+* Express.js
+* JWT Authentication
+* bcrypt
+* Nodemailer
+
+## Database
+
+* Google Firebase Cloud Firestore
+
+## APIs
+
+* Google OAuth
+* Weather API
+* Random.org API (OTP generation)
+
+## Deployment
+
+* Render
+
+---
+
+# 🚀 Getting Started
+
+## 1. Clone the Repository
+
+```bash
+git clone https://github.com/divya280904/TravelSaathi
+
+cd TravelSaathi
+```
+
+---
+
+## 2. Install Dependencies
+
+This project uses **npm workspaces**, allowing you to install dependencies for the root, backend, and frontend with a single command.
+
+From the project root directory, run:
+
+```bash
+npm run install:all
+```
+
+This command installs:
+
+- Root project dependencies
+- Backend dependencies
+- Frontend dependencies
+
+Alternatively, you can install them manually:
+
+```bash
+npm install
+npm install --workspace=backend
+npm install --workspace=frontend
+```
+
+---
+
+## 3.🔥 Firebase Setup
+
+## Create Firebase Project
+
+1. Open Firebase Console.
+2. Create a new project.
+3. Enable Cloud Firestore.
+4. Generate a Firebase Service Account Key.
+5. Download the JSON key.
+6. Store it securely inside the backend project.
+7. Do **not** commit the credentials file to GitHub.
+
+---
+
+## Firestore Security Rules (Development)
 
 ```javascript
 rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-    // Rules for user accounts
+
     match /users/{userId} {
       allow read, write: if true;
     }
-    
-    // Rules for trips
+
     match /trips/{tripId} {
+      allow read, write: if true;
+    }
+
+    match /buddies/{buddyId} {
+      allow read, write: if true;
+    }
+
+    match /messages/{messageId} {
       allow read, write: if true;
     }
   }
 }
 ```
 
----
-
-## Step 3: Generate a Service Account Private Key
-
-To authorize your backend Express server to talk to Firestore securely:
-
-1. Click the gear icon (**Project settings**) at the top left of the Firebase Console.
-2. Select the **Service accounts** tab.
-3. Click the **Generate new private key** button at the bottom of the page.
-4. Click **Generate key** to download the configuration `.json` file.
-5. Move the downloaded JSON file into your local project workspace (e.g., at the root of `TravelBuddyFinder-main/`).
-6. **Rename it** to something simple like `firebase-credentials.json`.
-7. *Note: `.gitignore` has been updated to automatically ignore `.env` and JSON keys so they won't be pushed to GitHub.*
+> **Note:** These rules are for development only. Restrict access appropriately before deploying to production.
 
 ---
 
-## Step 4: Configure Environment Variables
+# ⚙️ Environment Variables
 
-Open the `.env` file at the root of your project and configure it with your project settings:
+Create a `.env` file inside the root directory.
 
-```env
-PORT=5000
+Copy `.env.example` file and replace `****` with your credentials.
 
-# Firebase Settings
-FIREBASE_PROJECT_ID=your-firebase-project-id
-FIREBASE_SERVICE_ACCOUNT_PATH=e:/projects/TravelBuddyFinder-main/TravelBuddyFinder-main/firebase-credentials.json
+For the frontend:
 
-# API Keys
-RANDOM_ORG_API_KEY=98abdc56-e679-4f8f-9667-5c2abfe4d401
-WEATHER_API_KEY=e9522cc09ce444238ff202255240209
+Create a `.env` file inside the frontend directory.
 
-# JWT (backend)
-JWT_SECRET=change-me-in-production
+Copy `.env.example` file from frontend directory and replace `****` with your credentials.
+
+---
+
+# ▶️ Running the Application
+
+Start both the backend and frontend simultaneously:
+
+```bash
+npm run dev
 ```
-*Replace `your-firebase-project-id` with your actual Firebase Project ID (found in Project Settings) and supply the absolute path to your `firebase-credentials.json`.*
+
+This will start:
+
+- **Backend:** http://localhost:5000
+- **Frontend:** http://localhost:5173
+
+You can also start them individually.
+
+### Start Backend
+
+```bash
+npm run dev:backend
+```
+
+### Start Frontend
+
+```bash
+npm run dev:frontend
+```
 
 ---
 
-## Step 5: Start the Development Server
+## 👩‍💻 Author
 
-With Firebase credentials active:
+**Divya Gupta**
 
-1. Open a terminal in the root folder.
-2. Ensure dependencies are installed for both frontend and backend:
-   ```bash
-   npm run install:all
-   ```
-3. Run the development environment:
-   ```bash
-   npm run dev
-   ```
-   * The backend will run on `http://localhost:5000`.
-   * The frontend client will run on `http://localhost:5173`.
-   * Collections (`users` and `trips`) will be automatically created on demand in your Firestore database!
-
----
-
-## Troubleshooting Indexing Queries
-If you query compound indexes on Firestore (e.g., getting users' own trips sorting by date), Firestore may require a composite index. 
-* If this happens, your terminal console will output a direct URL warning from the Firebase SDK (e.g., `https://console.firebase.google.com/project/.../database/firestore/indexes?...`).
-* Simply click that link in your browser and click **Create index** to generate the required index automatically.
+If you found this project useful, consider giving it a ⭐ on GitHub!
