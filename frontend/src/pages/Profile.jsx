@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useToast } from '../context/ToastContext';
 import '../App.css';
 
 const Profile = () => {
     const { targetUsername } = useParams();
+    const navigate = useNavigate();
     const { showToast } = useToast();
     const currentUsername = localStorage.getItem('name');
     const username = targetUsername || currentUsername;
@@ -165,6 +166,13 @@ const Profile = () => {
             const message = error.response?.data?.message || 'Failed to change password.';
             showToast(message, 'danger');
         }
+    };
+
+    const handleLogout = () => {
+        localStorage.removeItem('name');
+        localStorage.removeItem('userID');
+        localStorage.removeItem('token');
+        navigate('/login');
     };
 
     if (loading) {
@@ -418,6 +426,14 @@ const Profile = () => {
                     )}
                 </div>
             </div>
+
+            {isOwnProfile && (
+                <div style={{ marginTop: '40px', marginBottom: '20px', display: 'flex', justifyContent: 'center' }}>
+                    <button onClick={handleLogout} className="neo-btn neo-btn-danger" style={{ width: '250px' }}>
+                        🚪 Logout from TravelSaathi
+                    </button>
+                </div>
+            )}
         </div>
     );
 };

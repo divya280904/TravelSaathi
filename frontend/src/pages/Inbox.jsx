@@ -118,7 +118,7 @@ const Inbox = () => {
             <h2 className="welcome-title" style={{ textAlign: 'left', margin: '0 0 20px 0' }}>Your Messages</h2>
             
             {chats.length > 0 ? (
-                <div className="inbox-container flex-grow-1" style={{ display: 'grid', gridTemplateColumns: '300px 1fr', gap: '25px', height: '80%' }}>
+                <div className="inbox-container flex-grow-1">
                     {/* Left sidebar listing chats */}
                     <div className="inbox-list neo-raised">
                         {chats.map(chat => {
@@ -161,7 +161,7 @@ const Inbox = () => {
                                                 {getChatTitle(activeChat)}
                                             </h3>
                                             <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
-                                                Group Discussion • {activeChat.participants?.length || 0} Participants
+                                                {activeChat.participants?.length || 0} Participants
                                             </span>
                                         </div>
                                     </div>

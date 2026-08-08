@@ -120,7 +120,7 @@ const MyTrips = () => {
                         <div className='trips-grid'>
                             {Array.isArray(tripData) && tripData.length > 0 ? (
                                 tripData.map(trip => (
-                                    <div className='trip-card neo-raised' key={trip.tripID} style={{ minHeight: '440px' }}>
+                                    <div className='trip-card neo-raised' key={trip.tripID}>
                                         <div className="trip-body">
                                             <h4 className="trip-location">{trip.location}</h4>
                                             

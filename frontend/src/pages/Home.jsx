@@ -276,7 +276,7 @@ const Home = () => {
                             <option value="city">City Walk</option>
                         </select>
                     </div>
-                    <div className="search-group" style={{ gridColumn: 'span 2' }}>
+                    <div className="search-group search-group-span-2">
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ flex: 1 }}>
                                 <label>Start Date (From)</label>
@@ -288,7 +288,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="search-group" style={{ gridColumn: 'span 1' }}>
+                    <div className="search-group">
                         <div style={{ display: 'flex', gap: '10px' }}>
                             <div style={{ flex: 1 }}>
                                 <label>Min Days</label>
@@ -301,7 +301,7 @@ const Home = () => {
                         </div>
                     </div>
 
-                    <button type="submit" className="neo-btn neo-btn-primary" style={{ height: '48px', marginTop: '20px', gridColumn: 'span 3' }}>
+                    <button type="submit" className="neo-btn neo-btn-primary search-btn" style={{ height: '48px', marginTop: '20px' }}>
                         🔍 Search
                     </button>
                 </form>
