@@ -1136,11 +1136,13 @@ body {
 }
 
 .message-bubble {
-  max-width: 60%;
+  max-width: 75%;
   padding: 12px 18px;
   border-radius: 16px;
   font-size: 14px;
   line-height: 1.4;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
 .message-bubble.incoming {
@@ -1163,6 +1165,12 @@ body {
   gap: 15px;
   padding-top: 15px;
   border-top: 2px solid var(--shadow-dark);
+  align-items: center;
+}
+
+.chat-input-area input {
+  min-width: 0;
+  width: 100%;
 }
 
 /* Buddy approvals dashboard in MyTrips */

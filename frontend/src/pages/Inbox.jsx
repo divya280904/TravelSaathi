@@ -154,72 +154,88 @@ const Inbox = () => {
                     <div className={`chat-room neo-raised ${!activeChat ? 'mobile-hidden' : ''}`}>
                         {activeChat ? (
                             <>
-                                <div className="chat-header">
-                                    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                                <div className="chat-header" style={{ justifyContent: 'space-between', flexWrap: 'nowrap' }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', overflow: 'hidden', flex: 1, minWidth: 0 }}>
+                                        <button 
+                                            className="neo-btn request-btn-sm mobile-only" 
+                                            style={{ padding: '6px 12px', fontSize: '18px' }}
+                                            onClick={() => setActiveChat(null)}
+                                        >
+                                            ⬅
+                                        </button>
                                         <img 
                                             src={`https://api.dicebear.com/7.x/bottts/svg?seed=${getAvatarSeed(activeChat)}`} 
                                             alt="avatar" 
-                                            style={{ width: '45px', height: '45px', borderRadius: '50%' }} 
+                                            style={{ width: '45px', height: '45px', borderRadius: '50%', flexShrink: 0 }} 
                                         />
-                                        <div>
-                                            <h3 style={{ textAlign: 'left', fontSize: '18px', padding: 0, margin: 0 }}>
+                                        <div style={{ overflow: 'hidden' }}>
+                                            <h3 style={{ textAlign: 'left', fontSize: '18px', padding: 0, margin: 0, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                                                 {getChatTitle(activeChat)}
                                             </h3>
-                                            <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>
+                                            <span style={{ fontSize: '12px', color: 'var(--text-muted)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
                                                 {activeChat.participants?.length || 0} Participants
                                             </span>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
-                                        <button 
-                                            className="neo-btn request-btn-sm mobile-only" 
-                                            onClick={() => setActiveChat(null)}
-                                        >
-                                            ⬅ Back
-                                        </button>
+                                    <div style={{ display: 'flex', gap: '10px', flexShrink: 0 }}>
                                         <button 
                                             className="neo-btn request-btn-sm" 
+                                            style={{ padding: '6px', width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--text-color)' }}
                                             onClick={() => setShowParticipants(!showParticipants)}
+                                            title="Toggle Participants"
                                         >
-                                            {showParticipants ? 'Hide Participants' : 'View Participants'}
+                                            {showParticipants ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
+                                                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
+                                                    <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                                                    <line x1="2" y1="2" x2="22" y2="22" />
+                                                </svg>
+                                            ) : (
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                                    <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+                                                    <circle cx="12" cy="12" r="3" />
+                                                </svg>
+                                            )}
                                         </button>
                                         {activeChat.host !== username && (
                                             <button 
                                                 className="neo-btn request-btn-sm" 
-                                                style={{ background: 'var(--danger)', color: 'white', marginLeft: '10px' }}
+                                                style={{ background: 'var(--danger)', color: 'white' }}
                                                 onClick={() => handleRemoveParticipant(username)}
                                             >
-                                                Leave Chat
+                                                Leave
                                             </button>
                                         )}
                                     </div>
                                 </div>
-                                
                                 {showParticipants && activeChat.participants && (
-                                    <div className="neo-pressed" style={{ padding: '10px 15px', margin: '0 20px 10px', borderRadius: '12px', fontSize: '13px' }}>
-                                        <strong>Participants: </strong>
-                                        {activeChat.participants.map((p, idx) => (
-                                            <span key={idx} style={{ display: 'inline-flex', alignItems: 'center', marginRight: '15px', marginTop: '5px' }}>
-                                                <img 
-                                                    src={`https://api.dicebear.com/7.x/bottts/svg?seed=${p}`} 
-                                                    alt="avatar" 
-                                                    style={{ width: '20px', height: '20px', borderRadius: '50%', marginRight: '5px' }} 
-                                                />
-                                                <Link to={`/profile/${p}`} style={{ color: 'var(--primary-color)', textDecoration: 'none', marginRight: '5px' }}>
-                                                    {p}
-                                                </Link>
-                                                {activeChat.host === username && p !== username && (
-                                                    <button 
-                                                        className="neo-btn" 
-                                                        style={{ padding: '2px 5px', fontSize: '10px', background: 'var(--danger)', color: 'white', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                                                        onClick={() => handleRemoveParticipant(p)}
-                                                        title="Remove participant"
-                                                    >
-                                                        X
-                                                    </button>
-                                                )}
-                                            </span>
-                                        ))}
+                                    <div className="neo-pressed" style={{ padding: '15px', marginTop: '15px', borderRadius: '12px', fontSize: '13px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                                        <strong style={{ color: 'var(--text-color)' }}>Participants:</strong>
+                                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px' }}>
+                                            {activeChat.participants.map((p, idx) => (
+                                                <div key={idx} className="neo-raised" style={{ display: 'flex', alignItems: 'center', padding: '6px 12px', borderRadius: '20px', gap: '8px' }}>
+                                                    <img 
+                                                        src={`https://api.dicebear.com/7.x/bottts/svg?seed=${p}`} 
+                                                        alt="avatar" 
+                                                        style={{ width: '24px', height: '24px', borderRadius: '50%' }} 
+                                                    />
+                                                    <Link to={`/profile/${p}`} style={{ color: 'var(--primary)', textDecoration: 'none', fontWeight: '600' }}>
+                                                        {p}
+                                                    </Link>
+                                                    {activeChat.host === username && p !== username && (
+                                                        <button 
+                                                            className="neo-btn" 
+                                                            style={{ padding: '4px 6px', fontSize: '10px', background: 'var(--danger)', color: 'white', borderRadius: '50%', cursor: 'pointer', marginLeft: '5px' }}
+                                                            onClick={() => handleRemoveParticipant(p)}
+                                                            title="Remove participant"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    )}
+                                                </div>
+                                            ))}
+                                        </div>
                                     </div>
                                 )}
 
