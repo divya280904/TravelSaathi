@@ -120,7 +120,7 @@ const Inbox = () => {
             {chats.length > 0 ? (
                 <div className="inbox-container flex-grow-1">
                     {/* Left sidebar listing chats */}
-                    <div className="inbox-list neo-raised">
+                    <div className={`inbox-list neo-raised ${activeChat ? 'mobile-hidden' : ''}`}>
                         {chats.map(chat => {
                             const title = getChatTitle(chat);
                             const avatarSeed = getAvatarSeed(chat);
@@ -146,7 +146,7 @@ const Inbox = () => {
                     </div>
 
                     {/* Right side chat view */}
-                    <div className="chat-room neo-raised">
+                    <div className={`chat-room neo-raised ${!activeChat ? 'mobile-hidden' : ''}`}>
                         {activeChat ? (
                             <>
                                 <div className="chat-header">
@@ -165,7 +165,13 @@ const Inbox = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div>
+                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                        <button 
+                                            className="neo-btn request-btn-sm mobile-only" 
+                                            onClick={() => setActiveChat(null)}
+                                        >
+                                            ⬅ Back
+                                        </button>
                                         <button 
                                             className="neo-btn request-btn-sm" 
                                             onClick={() => setShowParticipants(!showParticipants)}

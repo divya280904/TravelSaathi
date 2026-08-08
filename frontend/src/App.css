@@ -71,10 +71,12 @@ body {
   gap: 8px;
 }
 
-.neo-btn:hover {
-  box-shadow: 2px 2px 4px var(--shadow-dark), 
-             -2px -2px 4px var(--shadow-light);
-  transform: translateY(1px);
+@media (hover: hover) {
+  .neo-btn:hover {
+    box-shadow: 2px 2px 4px var(--shadow-dark), 
+               -2px -2px 4px var(--shadow-light);
+    transform: translateY(1px);
+  }
 }
 
 .neo-btn:active {
@@ -152,6 +154,10 @@ body {
 }
 
 .mobile-top-bar {
+  display: none;
+}
+
+.mobile-only {
   display: none;
 }
 
@@ -1288,6 +1294,16 @@ body {
   }
   .inbox-container {
     grid-template-columns: 1fr;
+  }
+  .trips-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .mobile-hidden {
+    display: none !important;
+  }
+  .mobile-only {
+    display: flex;
   }
   .inbox-list {
     max-height: 200px;
