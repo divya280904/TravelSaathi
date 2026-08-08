@@ -14,6 +14,7 @@ const Inbox = () => {
     const [showParticipants, setShowParticipants] = useState(false);
     const [participantToRemove, setParticipantToRemove] = useState(null);
     const messagesEndRef = useRef(null);
+    const prevMsgCount = useRef(0);
 
     // Fetch active chats list
     useEffect(() => {
@@ -21,10 +22,6 @@ const Inbox = () => {
             try {
                 const res = await api.get('/api/chats');
                 setChats(res.data);
-                if (res.data.length > 0 && !activeChat) {
-                    // Default to first chat room
-                    setActiveChat(res.data[0]);
-                }
             } catch (error) {
                 console.error('Error fetching chats:', error);
             }
@@ -53,9 +50,17 @@ const Inbox = () => {
         return () => clearInterval(interval);
     }, [activeChat]);
 
-    // Scroll chat to bottom when messages load/change
+    // Reset scroll tracking when changing chats
     useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        prevMsgCount.current = 0;
+    }, [activeChat]);
+
+    // Scroll chat to bottom ONLY when new messages arrive
+    useEffect(() => {
+        if (messages.length !== prevMsgCount.current) {
+            messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+            prevMsgCount.current = messages.length;
+        }
     }, [messages]);
 
     // Send Message handler
@@ -114,7 +119,7 @@ const Inbox = () => {
     };
 
     return (
-        <div className="content" style={{ height: 'calc(100vh - 80px)', display: 'flex', flexDirection: 'column' }}>
+        <div className="content" style={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
             <h2 className="welcome-title" style={{ textAlign: 'left', margin: '0 0 20px 0' }}>Your Messages</h2>
             
             {chats.length > 0 ? (
@@ -165,7 +170,7 @@ const Inbox = () => {
                                             </span>
                                         </div>
                                     </div>
-                                    <div style={{ display: 'flex', gap: '10px' }}>
+                                    <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
                                         <button 
                                             className="neo-btn request-btn-sm mobile-only" 
                                             onClick={() => setActiveChat(null)}

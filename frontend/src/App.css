@@ -1294,6 +1294,7 @@ body {
   }
   .inbox-container {
     grid-template-columns: 1fr;
+    height: calc(100vh - 160px);
   }
   .trips-grid {
     grid-template-columns: 1fr;
@@ -1306,7 +1307,9 @@ body {
     display: flex;
   }
   .inbox-list {
-    max-height: 200px;
+    max-height: none;
+    height: 100%;
+    align-self: start;
   }
   .profile-grid-fields {
     grid-template-columns: 1fr;
