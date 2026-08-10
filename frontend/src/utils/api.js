@@ -2,7 +2,7 @@ import axios from 'axios';
 
 // Unified Axios API client
 const api = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'https://travelsaathi-arz9.onrender.com',
+    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000',
 });
 
 // Interceptor to automatically attach JWT header from localStorage

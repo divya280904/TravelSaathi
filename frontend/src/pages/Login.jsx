@@ -60,7 +60,7 @@ const Login = () => {
     }
 
     const handleGoogleLogin = () => {
-        const backendBase = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+        const backendBase = import.meta.env.VITE_API_URL || 'http://localhost:5000';
         window.location.href = `${backendBase}/api/auth/oauth/google`;
     };
 
